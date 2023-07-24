@@ -94,27 +94,63 @@ func main() {
 	currentLine := script.Script[pos]
 
 	if len(currentLine.Args) != len(os.Args)-1 {
-		fmt.Printf("\a")
-		if os.Getenv("APPY_DEBUG") == "true" {
-			fmt.Printf("wrong number of arguments, expected %d, got %d", len(currentLine.Args), len(os.Args)-1)
-			os.Exit(1)
-		} else {
-			os.Exit(0)
-		}
-
+		debugAndLeave("wrong number of arguments, expected %d, got %d", len(currentLine.Args), len(os.Args)-1)
 	}
 
 	for i, expected := range currentLine.Args {
 		got := os.Args[i+1]
 		if got != expected {
-			fmt.Printf("\a")
-			if os.Getenv("APPY_DEBUG") == "true" {
-				fmt.Printf("failed to match argument in position %d, expected `%s`, but got `%s`", i+1, expected, got)
-				os.Exit(1)
-			} else {
-				os.Exit(0)
+			debugAndLeave("failed to match argument in position %d, expected `%s`, but got `%s`", i+1, expected, got)
+		}
+
+		fmt.Printf(currentLine.Output)
+
+		for _, dir := range currentLine.Dirs.Create {
+			// todo, ensure this is not a relative path
+			err = os.MkdirAll(dir.Name, 0755)
+			if err != nil {
+				debugAndLeave("can't create %s, error: %s", dir.Name, err.Error())
 			}
 		}
+
+		for _, dir := range currentLine.Dirs.Delete {
+			// todo, ensure this is not a relative path
+			err = os.RemoveAll(dir.Name)
+			if err != nil {
+				debugAndLeave("can't delete %s, error: %s", dir.Name, err.Error())
+			}
+		}
+
+		for _, file := range currentLine.Files.Apply {
+			// todo, ensure this is not a relative path
+			dir, _ := filepath.Split(file.Name)
+			err = os.MkdirAll(dir, 0755)
+			if err != nil {
+				debugAndLeave("can't create %s, error: %s", dir, err.Error())
+			}
+			err = os.WriteFile(file.Name, []byte(file.Content), 0644)
+			if err != nil {
+				debugAndLeave("can't apply %s, error: %s", file.Name, err.Error())
+			}
+		}
+
+		for _, file := range currentLine.Files.Delete {
+			err = os.Remove(file.Name)
+			if err != nil {
+				debugAndLeave("can't delete %s, error: %s", file.Name, err.Error())
+			}
+		}
+
+	}
+}
+
+func debugAndLeave(format string, args ...interface{}) {
+	fmt.Print("\a")
+	if os.Getenv("APPY_DEBUG") == "true" {
+		fmt.Printf(format+"\n", args...)
+		os.Exit(1)
+	} else {
+		os.Exit(0)
 	}
 }
 
