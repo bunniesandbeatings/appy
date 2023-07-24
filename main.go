@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -61,7 +62,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	scriptPath := strings.TrimSpace(string(config))
+	configValues := strings.Split(string(config), "\n")
+
+	scriptPath := configValues[0]
 
 	scriptData, err := os.ReadFile(scriptPath)
 	if err != nil {
@@ -75,9 +78,44 @@ func main() {
 		fmt.Printf("Could not parse yaml in script file `%s`, failed with: %s\n", scriptPath, err.Error())
 		os.Exit(1)
 	}
-	fmt.Printf("%+v\n", script)
+
+	var pos int
+	if len(configValues) < 2 {
+		pos = 0
+	} else {
+		pos, err = strconv.Atoi(configValues[1])
+		if err != nil {
+			pos = 0
+		}
+	}
+
 	//os.Args[1:]
 
+	currentLine := script.Script[pos]
+
+	if len(currentLine.Args) != len(os.Args)-1 {
+		fmt.Printf("\a")
+		if os.Getenv("APPY_DEBUG") == "true" {
+			fmt.Printf("wrong number of arguments, expected %d, got %d", len(currentLine.Args), len(os.Args)-1)
+			os.Exit(1)
+		} else {
+			os.Exit(0)
+		}
+
+	}
+
+	for i, expected := range currentLine.Args {
+		got := os.Args[i+1]
+		if got != expected {
+			fmt.Printf("\a")
+			if os.Getenv("APPY_DEBUG") == "true" {
+				fmt.Printf("failed to match argument in position %d, expected `%s`, but got `%s`", i+1, expected, got)
+				os.Exit(1)
+			} else {
+				os.Exit(0)
+			}
+		}
+	}
 }
 
 func findConfig(dir string) (string, error) {
