@@ -2,6 +2,16 @@
 
 Makes your CLI demos 'appy
 
+## What makes it 'appy?
+
+Instead of prototyping a CLI for your design proposal:
+> Fake it 'til you make it
+
+Using a [script](./demos/git.yaml) to describe the interactions with a hypothetical CLI, you can demonstrate:
+1. How your CLI reponds on stdout to a command
+2. The files and directories your CLI creates/deletes/updates (so long as they're plain text)
+
+
 ## Demo
 
 Try this in a fresh terminal
