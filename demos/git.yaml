@@ -4,6 +4,7 @@ description: demonstrates some uses of git
 script:
   - args:
       - init
+      - .
     output: |
       Initialized empty Git repository in /Users/pwilliams/demo/.git/
     dirs:
