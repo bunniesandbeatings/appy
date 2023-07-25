@@ -49,3 +49,12 @@ $ git add .
 $ git status
 $ git commit -m "wip"
 ```
+
+# Todo:
+* [ ] make the 'appy' CLI respond with appy commands when it's not invoked as a different binary
+    * [ ] `appy help`
+    * [ ] `appy version`
+    * [ ] `appy describe` - let's you know what script is selected and tells you what is expected.
+    * [ ] `appy line current` - whats the current line number, command and side effects
+    * [ ] `appy line set <n>` - move the line
+* [ ] make it possible to have extra lines that don't interact but produce a demo script
