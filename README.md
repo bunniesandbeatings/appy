@@ -33,6 +33,10 @@ echo "./path/to/appy/demos/git.yaml" > .appy
 
 Now when you type `git` with unrecognized params, you will get a bell character
 to warn you that your demo is off script. 
+
+You can append `APPY_DEBUG=TRUE` to your command if you need more details on what
+you got wrong.
+
 When you type it with the right params, you'll get the scripted behaviour:
 
 Try:
