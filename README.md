@@ -21,11 +21,13 @@ Try this in a fresh terminal
 alias git="./path/to/appy/executable"
 
 # create a working dir for the appy demo. 
-# appy will not modify files outside the dir containing .appy
 mkdir demo
 cd demo
 
 # generate a config that points to the demo script
+# you can place this in a directory above your demo dir
+# if you dont anyone to see it in your directory during
+# your demo
 echo "./path/to/appy/demos/git.yaml" > .appy
 ```
 
