@@ -58,3 +58,4 @@ $ git commit -m "wip"
     * [ ] `appy line current` - whats the current line number, command and side effects
     * [ ] `appy line set <n>` - move the line
 * [ ] make it possible to have extra lines that don't interact but produce a demo script
+* [ ] parse arg string so it doesnt have to be broken into an array
